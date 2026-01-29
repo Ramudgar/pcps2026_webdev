@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A simple HTML template for Lab B" />
+    <meta name="author" content="Ram udgar Yadav" />
+    <title>Document</title>
+
+    <style>
+      /* tag or element selector */
+      h1 {
+        color: rgb(48, 42, 165);
+      }
+
+      /* universal selector */
+      * {
+        box-sizing: border-box;
+        background-color: rgb(242, 237, 231);
+        font-family: Arial, sans-serif;
+      }
+
+      #para2 {
+        color: green;
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .para-class,
+      ul {
+        color: purple !important;
+        font-size: 16px;
+        font-style: italic;
+      }
+
+      a:link {
+        color: blue;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        color: darkblue;
+        cursor: pointer;
+      }
+
+      a:visited {
+        color: darkviolet;
+      }
+
+      a:active {
+        color: red;
+      }
+
+
+      #my-div{
+        border: 2px solid black;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: rgb(220, 220, 220);
+      }
+
+      #my-div p{
+        color: teal;
+        font-size: 14px;
+      }
+
+      #my-div div p{
+        color: maroon;
+        font-size: 14px;
+      }
+
+      /* #my-div p:first-child{
+        font-weight: bold;
+      }
+
+      #my-div p:nth-child(4){
+        text-decoration: underline;
+      } */
+
+      #my-div p:nth-child(odd){
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to Lab B</h1>
+    <p style="color: brown; font-weight: 600">
+      This is a simple HTML template for Lab B.
+    </p>
+    <img src="" alt="" />
+
+    <h1>This is second heading</h1>
+
+    <p id="para2" class="para-class">
+      This is a paragraph under the second heading.
+    </p>
+
+    <p class="para-class">This is a third paragraph.</p>
+
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li>Item 3</li>
+    </ul>
+
+    <!-- link of facebook and linkedin -->
+    <a href="https://www.facebook.com/" id="facebook-link" target="_blank"
+      >Facebook</a
+    ><br />
+    <a href="https://www.linkedin.com/" id="linkedin-link" target="_blank"
+      >LinkedIn</a
+    >
+
+
+    <div  id="my-div">
+      <p >This is a paragraph inside a div.</p>
+      <p>This is another paragraph inside the same div.</p>
+      <p>This is yet another paragraph inside the same div.</p>
+      <p>This is a heading inside the same div.</p>
+      <p>This is a paragraph under the heading.</p>
+
+      <div>
+        <p>This is a paragraph inside a nested div.</p>
+        <p>This is another paragraph inside the nested div.</p> 
+      </div>
+    </div>
+
+    <ul>
+      <li>This is the first item in the list.</li>
+      <li>This is the second item in the list.</li>
+      <li>This is the third item in the list.</li>
+      <li>This is the fourth item in the list.</li>
+      <li>This is the fifth item in the list.</li>
+    </ul>
+  </body>
+</html>

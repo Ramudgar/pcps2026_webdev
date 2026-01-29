@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox</title>
+
+    <style>
+        html{
+            box-sizing: border-box;
+            font-family: "Courier New", Courier, monospace;
+            padding: 0;
+            margin: 0;
+        }
+        main{
+            height: 600px;
+            border: 2px solid black;
+            background-color: grey;
+            display: flex;
+            /* flex-direction: row; */
+            /* flex-direction: column; */
+            justify-content: center;
+            /* justify-content: start; */
+            /* justify-content: end; */
+            /* justify-content: space-between; */
+            /* justify-content: space-around; */
+            /* justify-content: space-evenly; */
+            /* align-items: center; */
+            /* align-items: start; */
+            flex-wrap: wrap;
+        }
+
+        main div{
+            border: 1px solid black;
+            margin: 20px;
+            padding: 20px;
+            font-size: 24px;
+            height: 100px;
+            text-align: center;
+            width: 150px;
+            border-radius: 10px;
+            line-height: 100px;
+        }
+        main div:nth-child(odd){
+            background-color: #f91c1c;
+            color: white;
+        }
+        main div:nth-child(even){
+            background-color: #1c7ef9;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+    </main>
+</body>
+</html>

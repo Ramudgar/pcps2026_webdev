@@ -1,0 +1,32 @@
+footer p{
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+}
+
+footer div a{
+    margin: 0 10px;
+    text-decoration: none;
+    color: #555;
+}
+
+main ul li a{
+    text-decoration: none;
+    color: #0066cc;
+}
+
+main ul li:first-child a{
+    /* font-weight: bold; */
+}
+
+main ul li:nth-child(even) a{
+    color:#cc0069
+}
+
+form input[type="text"]:focus{
+    color: red;
+}
+
+main ul li::marker{
+    color: green;
+}

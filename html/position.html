@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Position</title>
+
+    <style>
+      html {
+        box-sizing: border-box;
+        font-family: "Courier New", Courier, monospace;
+        padding: 0;
+        margin: 0;
+      }
+      nav {
+        /* position: fixed;
+            top: 0;
+            left: 0; */
+        width: 100%;
+        background-color: #333;
+        color: white;
+        padding: 10px 0;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+
+      nav ul li {
+        display: inline-block;
+      }
+
+      main{
+        position: relative;
+        border: 2px solid black;
+      
+      }
+
+      main div {
+        border: 1px solid black;
+        margin: 20px;
+        padding: 20px;
+        font-size: 24px;
+        height: 100px;
+        text-align: center;
+        width: 150px;
+        line-height: 100px;
+        border-radius: 10px;
+      }
+
+      main div:nth-child(odd) {
+        background-color: #f91c1c;
+        color: white;
+      }
+
+      main div:nth-child(even) {
+        background-color: #1c7ef9;
+        color: white;
+      }
+
+      main div:nth-child(1) {
+        position: static;
+        /* top:150px; */ 
+      }
+
+      main div:nth-child(2) {
+        position: relative;
+        top:100px;
+        left:300px;
+        /* top:100px;
+        right: 80px; */
+
+      }
+
+      main div:nth-child(3) {
+        position: absolute;
+        /* top:0px; */
+        /* left:0px; */
+        /* right:0px; */
+        /* bottom:0px; */
+
+        top:50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+
+
+      }
+    </style>
+  </head>
+  <body>
+    <header></header>
+    <nav>
+      <ul>
+        <li><a href="static.html">Static</a></li>
+        <li><a href="relative.html">Relative</a></li>
+        <li><a href="absolute.html">Absolute</a></li>
+        <li><a href="fixed.html">Fixed</a></li>
+        <li><a href="sticky.html">Sticky</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div>static</div>
+      <div>relative</div>
+      <div>absolute</div>
+      <div>fixed</div>
+      <div>sticky</div>
+    </main>
+    <footer>
+      <div>
+        <p>
+          <span
+            >Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis
+            maxime ipsum, quod esse sed deserunt saepe debitis necessitatibus ut
+            adipisci qui fugiat odit sapiente aut. Enim modi ut quae unde.</span
+          ><span
+            >Quos, accusamus minima. Dolorem impedit placeat laboriosam itaque
+            nam fuga! Temporibus fugiat eius, ipsum, reiciendis harum ea in
+            corrupti doloremque tempora ratione similique et officiis blanditiis
+            quas earum facere voluptatum?</span
+          ><span
+            >Enim aliquid id, reiciendis quasi itaque iste quam ea perspiciatis
+            nam modi nulla sint mollitia facere? Quae omnis molestias est
+            mollitia placeat maiores. Totam, dicta voluptatum officia quo quam
+            repellat!</span
+          ><span
+            >Blanditiis atque nemo eaque temporibus neque nobis earum placeat,
+            nisi maxime delectus officiis vitae error fugit cumque tempora velit
+            corporis libero ad, sed deleniti nulla deserunt doloremque minima?
+            Quam, a.</span
+          ><span
+            >Quibusdam alias nemo ex dolor perspiciatis numquam, soluta libero
+            enim minus nam beatae sequi nobis vitae dolores quis obcaecati fuga
+            autem porro error ducimus. Saepe quas officia consectetur magnam
+            qui!</span
+          ><span
+            >Unde ea reiciendis ipsam facere vitae dicta hic impedit, aspernatur
+            beatae tenetur sequi at repellendus voluptate soluta vero non quis
+            aperiam qui iure harum doloribus quo? Laudantium quos ab
+            commodi!</span
+          ><span
+            >Aspernatur, itaque ipsam sint ipsum eligendi labore consectetur
+            vitae iusto voluptatum mollitia. Eius ex voluptate, dicta dolorem
+            excepturi repellat dignissimos, ea sed repudiandae maiores sint iure
+            et quibusdam aut? Enim?</span
+          ><span
+            >Incidunt quis nostrum magni sunt, temporibus velit pariatur labore
+            aliquid, eius, recusandae ipsum aspernatur voluptates odio at minus
+            sint placeat quae libero nam dolores officia? Harum corporis nostrum
+            porro est.</span
+          ><span
+            >Minus omnis quasi eveniet, fuga rerum adipisci ea mollitia, porro
+            quaerat, magnam eum accusantium officiis incidunt! Pariatur aperiam
+            earum porro nisi nostrum minima impedit veritatis iste,
+            reprehenderit quia maxime natus?</span
+          ><span
+            >Voluptatum quasi placeat atque rem a? Perferendis, nihil, quas
+            nesciunt fuga dolorum deserunt exercitationem dignissimos ea
+            blanditiis consequuntur velit ipsam doloribus totam voluptate
+            eveniet distinctio aperiam. Magni a neque consectetur.</span
+          >
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

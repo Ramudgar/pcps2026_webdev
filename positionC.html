@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Position in css</title>
+    <style>
+      main div {
+        height: 100px;
+        width: 150px;
+        margin: 20px;
+        padding: 20px;
+        font-size: 24px;
+        text-align: center;
+        border: 1px solid black;
+        border-radius: 10px;
+        line-height: 100px;
+      }
+
+      main div:nth-child(odd) {
+        background-color: #28a745;
+        color: white;
+      }
+      main div:nth-child(even) {
+        background-color: #17a2b8;
+        color: white;
+      }
+
+      #static {
+        position: static;
+      }
+
+      main div:nth-child(2) {
+        position: relative;
+        top: 100px;
+        left: 300px;
+      }
+
+      main div:nth-child(3) {
+        position: absolute;
+        /* top: 0px; */
+        /* left: 200px; */
+        /* right: 0px ; */
+        /* left:0;
+            bottom:0; */
+
+        /* center */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Position in CSS</h1>
+    <p>This document explains the different position properties in CSS.</p>
+
+    <main>
+      <div id="static">Static</div>
+      <div>Relative</div>
+      <div>Absolute</div>
+      <div>Fixed</div>
+      <div>Sticky</div>
+    </main>
+  </body>
+</html>
