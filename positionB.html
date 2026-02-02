@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Position in html</title>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+
+        background-color: antiquewhite;
+      }
+      main div {
+        margin: 20px;
+        padding: 20px;
+        border: 2px solid black;
+        font-size: 24px;
+        height: 100px;
+        width: 200px;
+        text-align: center;
+        line-height: 100px;
+      }
+
+      main div:nth-child(odd) {
+        background-color: rgb(1, 1, 73);
+        color: white;
+      }
+      main div:nth-child(even) {
+        background-color: rgb(173, 216, 230);
+        color: black;
+      }
+
+      main div:nth-child(1) {
+        position: static;
+      }
+      main div:nth-child(2) {
+        position: relative;
+        top: 500px;
+        left: 300px;
+      }
+
+      main div:nth-child(3) {
+        position: absolute;
+        /* top: 200px;
+        left: 600px;
+       */
+
+        /* top:0px;
+       right: 0; */
+
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+
+
+     
+
+      @media screen and (max-width: 425px) {
+        main div:nth-child(3) {
+          top: 20%;
+          left: 20%;
+        }
+        html {
+          background-color: lightgray;
+        }
+
+        main div:nth-child(even) {
+          background-color: lightgreen;
+        }
+        main div:nth-child(odd) {
+          background-color: rgb(139, 0, 53);
+          color: white;
+        }
+      }
+
+       @media screen and (max-width: 768px) and (min-width: 426px) {
+        html {
+          background-color: red;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav></nav>
+    </header>
+
+    <main>
+      <div>Static</div>
+      <div>Relative</div>
+      <div>Absolute</div>
+      <div>Fixed</div>
+      <div>Sticky</div>
+    </main>
+
+    <footer></footer>
+  </body>
+</html>

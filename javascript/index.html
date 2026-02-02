@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Js learning</title>
+  </head>
+  <body>
+    <h1>Welcome to Js learning</h1>
+    <p>This is a simple HTML template for learning JavaScript.</p>
+
+    <button onclick="greetUser('Shyam')">Greet</button>
+
+    <script>
+      // console.log("Hello, welcome to JavaScript learning!");
+
+      function greetUser(name) {
+        alert("Hello, " + name + "! goodmorning.");
+      }
+
+      function addNumbers(a, b) {
+        return a + b;
+      }
+
+      console.log(addNumbers(2, 3));
+
+      let sum1 = addNumbers(5, 10);
+      console.log("The sum is: " + sum1);
+
+      let sum2 = addNumbers(20, 30);
+
+      function multiplyNumbers(a, b) {
+        console.log(a * b);
+      }
+      // let mulresult = multiplyNumbers(4, 6);
+      multiplyNumbers(4, 6);
+    </script>
+
+    <script src="./script.js" ></script>
+    <!-- no any further html code -->
+  </body>
+</html>
