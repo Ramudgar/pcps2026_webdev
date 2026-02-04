@@ -7,36 +7,57 @@
   </head>
   <body>
     <h1>Welcome to Js learning</h1>
-    <p>This is a simple HTML template for learning JavaScript.</p>
+    <p id="para1">This is a simple HTML template for learning JavaScript.</p>
+
+    <p class="para">this is second paragraph</p>
 
     <button onclick="greetUser('Shyam')">Greet</button>
+    <button class="change-text-btn">Change Text</button>
 
     <script>
       // console.log("Hello, welcome to JavaScript learning!");
 
-      function greetUser(name) {
-        alert("Hello, " + name + "! goodmorning.");
-      }
+      // function greetUser() {
+      //   // fn statement
+      //   console.log("Hello, welcome to JavaScript learning!");
+      // }
 
-      function addNumbers(a, b) {
-        return a + b;
-      }
+      // greetUser();
 
-      console.log(addNumbers(2, 3));
+      //   function greetUser(name) {
+      //     alert(`Hello, ${name}! Welcome to JavaScript learning!`);
+      //   }
 
-      let sum1 = addNumbers(5, 10);
-      console.log("The sum is: " + sum1);
+      //   function addNumbers(a, b) {
+      //     return a + b;
+      //   }
 
-      let sum2 = addNumbers(20, 30);
+      //   function substractNumbers(a, b) {
+      //     console.log(a - b);
+      //   }
 
-      function multiplyNumbers(a, b) {
-        console.log(a * b);
-      }
-      // let mulresult = multiplyNumbers(4, 6);
-      multiplyNumbers(4, 6);
+      //   // console.log(addNumbers(5, 3));
+      //   const result = addNumbers(5, 3);
+      //   const sum2 = addNumbers(10, 20);
+      //   console.log("Result:", result);
+      //   console.log("Sum2:", sum2);
+      //   // let subresult=substractNumbers(10, 4);
+
+      //   // greetUser("Shyam");
+
+      let paragraph = document.getElementsByTagName("p");
+
+      console.log(paragraph[0].textContent);
+
+      paragraph[0].innerHTML = "This is <b> updated </b> paragraph text.";
+
+      
+
     </script>
+    <!-- external js file -->
 
-    <script src="./script.js" ></script>
+    <script src="./script.js"></script>
+
     <!-- no any further html code -->
   </body>
 </html>
