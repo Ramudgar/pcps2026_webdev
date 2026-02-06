@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Object Model</title>
+  </head>
+  <body>
+    <div id="container">
+      <h1 class="title">Welcome to the Document Object Model</h1>
+      <p id="para1">This is a simple example of using the DOM in JavaScript.</p>
+      <button id="changeTextBtn" onclick="ChangTextColor()">Change Text</button>
+      <h1 class="title">DOM Manipulation</h1>
+      <p id="para2">This is another paragraph.</p>
+    </div>
+
+    <form action="">
+      <input type="email" id="inputField" placeholder="Enter email..." />
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      //   console.log(document);
+      let heading1 = document.getElementsByTagName("h1");
+      console.log(heading1);
+
+      console.log(heading1[0].textContent);
+      heading1[0].textContent = "Hello, DOM!";
+      console.log(heading1[0].textContent);
+      heading1[1].innerHTML = "DOM <em>Manipulation Updated!</em>";
+      heading1[1].style.color = "blue";
+      //   heading1[1].innerHTML ="";
+      // accesing element with id
+      let para1 = document.getElementById("para1");
+      console.log(para1);
+      para1.style.fontSize = "20px";
+      para1.style.color = "green";
+
+      // accessing element with class name
+      let titles = document.getElementsByClassName("title");
+      console.log(titles);
+      for (let i = 0; i < titles.length; i++) {
+        titles[i].style.textDecoration = "underline";
+      }
+
+      // accessing element with querySelector
+      //   let changeTextBtn = document.querySelector("#changeTextBtn");
+      //   changeTextBtn.addEventListener("click", function () {
+      //     para1.textContent = "Text has been changed!";
+      //     para1.style.color = "red";
+      //   });
+
+      function ChangTextColor() {
+        para1.textContent = "Text has been changed by function!";
+        para1.style.color = "purple";
+      }
+
+      // accessing element with querySelectorAll
+      let allParagraphs = document.querySelectorAll("p");
+      allParagraphs.forEach(function (para) {
+        para.style.fontWeight = "bold";
+      });
+
+      let emailInput = document.getElementById("inputField");
+      emailInput.addEventListener("input", function () {
+        let emailValue = emailInput.value;
+        console.log(emailValue);
+      });
+
+      let form = document.querySelector("form");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        alert(`Form submitted with email: ${emailInput.value}`);
+        emailInput.value = "";
+      });
+    </script>
+    <script src="../script.js"></script>
+  </body>
+</html>
