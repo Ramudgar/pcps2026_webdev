@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topic Listing</title>
+    <style>
+      html {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        height: 80px;
+        position: relative;
+        background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+        margin-bottom: 1px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        padding: 0 40px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        margin: 0;
+      }
+
+      nav ul {
+        display: flex;
+      }
+
+      nav ul li {
+        list-style: none;
+        margin: 0 30px;
+      }
+
+      nav ul li a {
+        text-decoration: none;
+      }
+
+      #search-container {
+        height: 50vh;
+        background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+      }
+      #topic-list {
+        height: 50vh;
+        background-color: rgb(128, 208, 199);
+      }
+
+      #search-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #search-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 30px;
+        background-color: white;
+        width: 450px;
+        border-radius: 40px;
+      }
+
+      #search-box input {
+        border: none;
+        outline: none;
+        font-size: 16px;
+        width: 300px;
+      }
+      #search-box button {
+        background-color: #13547a;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+    </style>
+    <!-- cdn link for remixicon -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div>
+          <h2>Topic</h2>
+        </div>
+
+        <ul>
+          <li><a href="">Home</a></li>
+          <li><a href="">Browse Topics</a></li>
+          <li><a href="">How it works</a></li>
+          <li><a href="">Faq's</a></li>
+          <li><a href="">Contact</a></li>
+          <li><a href="">Pages</a></li>
+        </ul>
+
+        <ul>
+          <li>
+            <a href=""><i class="ri-user-fill"></i></a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div id="search-container">
+        <div>
+          <h3 style="text-align: center">
+            Discover.Learn.Enjoy
+            <span>
+              <br />
+              <p style="font-size: 16px; font-weight: 400">
+                platform for creatives around the world
+              </p>
+            </span>
+          </h3>
+
+          <div id="search-box">
+            <span
+              ><i class="ri-search-line"></i>
+              <input
+                type="search"
+                placeholder="Design, code, marketing, finance..."
+              />
+            </span>
+            <button type="submit">Search</button>
+          </div>
+        </div>
+      </div>
+      <div id="topic-list"></div>
+    </main>
+  </body>
+</html>
