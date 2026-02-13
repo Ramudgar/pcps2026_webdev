@@ -1,8 +1,9 @@
 import "./Styles/App.css";
 import CourseCard from "./Components/CourseCard";
 // import InfoCard from "./Components/CourseCard";
-import Navbar from "./Components/NavbarComponents";
+
 import CounterApp from "./Components/CounterApp";
+import AppRoute from "./Routes/AppRoute";
 
 function App() {
   const courses = [
@@ -64,17 +65,19 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div>
+      {/* <div>
         <h3>Course Managment System</h3>
-      </div>
+      </div> */}
       {/* <InfoCard name="mern stack" duration="2" />
        <InfoCard name="Java Script" duration="1" /> */}
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <CourseCard props={courses} />
-      </div>
+      </div> */}
 
-      <CounterApp/>
+      {/* <CounterApp/> */}
+
+      <AppRoute/>
+      
     </>
   );
 }

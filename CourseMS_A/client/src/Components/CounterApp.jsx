@@ -12,7 +12,7 @@ export default function CounterApp() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-blue-500 to-indigo-600">
         <div className="bg-white shadow-2xl rounded-2xl p-8 w-80 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Counter App</h2>
 
