@@ -1,7 +1,8 @@
-import "./App.css";
+import "./Styles/App.css";
 import CourseCard from "./Components/CourseCard";
 // import InfoCard from "./Components/CourseCard";
 import Navbar from "./Components/NavbarComponents";
+import CounterApp from "./Components/CounterApp";
 
 function App() {
   const courses = [
@@ -72,8 +73,11 @@ function App() {
       <div className="flex gap-2">
         <CourseCard props={courses} />
       </div>
+
+      <CounterApp/>
     </>
   );
 }
 
 export default App;
+

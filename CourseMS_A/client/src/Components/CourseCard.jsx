@@ -2,9 +2,9 @@ export default function CourseCard({ props }) {
   const courses = props;
   return (
     <>
-      {courses.map((course) => (
+      {courses.map((course,id) => (
         <div
-          key={course.id}
+          key={id}
           className="max-w-sm rounded-2xl overflow-hidden shadow-lg border bg-white hover:shadow-2xl transition duration-300 hover:-translate-y-1"
         >
           {/* Image */}
