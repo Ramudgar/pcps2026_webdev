@@ -6,6 +6,7 @@ const registerUser = async (userData) => {
     if (existingUser) {
       const error = new Error("User already exists with this email");
       error.statusCode = 400;
+      console.error("Error in registerUser:", error);
       throw error;
     }
 
@@ -17,12 +18,11 @@ const registerUser = async (userData) => {
     });
 
     await user.save();
-    const token = user.generateToken();
 
     return {
       success: true,
       message: "User registered successfully",
-      data: { user, token },
+      data: { user },
     };
   } catch (error) {
     console.error("Error in registerUser:", error.message);
@@ -174,7 +174,7 @@ const deactivateUser = async (userId) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { isActive: false },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
