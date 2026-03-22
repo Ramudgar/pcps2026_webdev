@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const { PORT, NODE_ENV, CLIENT_URL } = require("./config/config");
 const connectDB = require("./config/database");
@@ -17,6 +18,11 @@ app.use(cors({
 // Body parsing middleware - to read JSON data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Static file serving - for uploaded images
+// This makes files in the 'uploads' folder accessible via URL
+// Example: http://localhost:8080/uploads/avatars/1234567890.jpg
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Request logging (development only)
 if (NODE_ENV === "development") {

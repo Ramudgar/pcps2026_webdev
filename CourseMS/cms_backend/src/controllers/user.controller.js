@@ -222,6 +222,50 @@ const logout = async (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };
 
+/**
+ * Update user's avatar/profile picture
+ * This function is called after multer middleware processes the file upload
+ * req.file contains the uploaded file information
+ */
+const updateAvatar = async (req, res) => {
+  try {
+    // Check if file was uploaded by multer
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload an image file",
+      });
+    }
+
+    const result = await userService.updateAvatar(req.user.id, req.file);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+/**
+ * Delete user's avatar (reset to default)
+ */
+const deleteAvatar = async (req, res) => {
+  try {
+    const result = await userService.deleteAvatar(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -233,4 +277,6 @@ module.exports = {
   deactivateUser,
   createUser,
   logout,
+  updateAvatar,
+  deleteAvatar,
 };
