@@ -67,7 +67,9 @@ router.get("/profile", protect, userController.getProfile);
  * Update current user's profile (text fields only)
  * Body: { name, phone, address }
  */
-router.put("/profile", protect, userController.updateProfile);
+router.put("/profile",
+  protect,
+   userController.updateProfile);
 
 /**
  * PATCH /api/users/avatar

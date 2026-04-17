@@ -127,6 +127,7 @@ const createMulterConfig = (uploadDir, maxFileSize = 5 * 1024 * 1024) => {
 const uploadAvatar = createMulterConfig(UPLOAD_DIRS.avatars);
 const uploadCourseImage = createMulterConfig(UPLOAD_DIRS.courses);
 
+
 /**
  * ============================================
  * 7. DELETE OLD FILE
@@ -161,6 +162,8 @@ const getFileUrl = (filename, type) => {
   if (!filename) return null;
 
   const folder = type === "avatar" ? "avatars" : "courses";
+
+
 
   return `/uploads/${folder}/${filename}`;
 };
