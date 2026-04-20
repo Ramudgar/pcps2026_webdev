@@ -34,9 +34,12 @@ export const fetchCourses = async (options = {}) => {
   if (options.priceType) queryParams.append("priceType", options.priceType);
   
   const queryString = queryParams.toString();
-  const url = queryString 
-    ? `${ENDPOINTS.courses.list}?${queryString}` 
-    : ENDPOINTS.courses.list;
+  const url = queryString ? 
+    // http://localhost:8080/api/courses?page=1,limit=10
+    `${ENDPOINTS.courses.list}?${queryString}` 
+    : 
+    // http://localhost:8080/api/courses
+    ENDPOINTS.courses.list;
 
   const response = await fetch(url, {
     method: "GET",

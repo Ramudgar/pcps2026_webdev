@@ -16,6 +16,7 @@ const router = express.Router();
 
 // Import controllers
 const courseController = require("../controllers/course.controller");
+const commentController = require("../controllers/comment.controller");
 
 // Import middleware
 const { protect, teacherOnly, adminOnly } = require("../middleware/auth.middleware");
@@ -120,6 +121,16 @@ router.put("/:id/lessons/:lessonId", protect, courseController.updateLesson);
  * Required: Course owner or admin
  */
 router.delete("/:id/lessons/:lessonId", protect, courseController.deleteLesson);
+
+// ============================================
+// COMMENT ROUTES
+// ============================================
+router.get("/:courseId/comments", commentController.getCourseComments);
+router.post("/:courseId/comments", protect, commentController.addComment);
+router.delete("/:courseId/comments/:commentId", protect, commentController.deleteComment);
+
+// Get enrolled students for a course (instructor/admin)
+router.get("/:id/students", protect, courseController.getCourseStudents);
 
 // Export router for use in app.js
 module.exports = router;

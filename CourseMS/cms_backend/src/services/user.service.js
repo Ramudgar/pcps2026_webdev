@@ -1,4 +1,7 @@
 const User = require("../models/user.models");
+const Course = require("../models/course.model");
+const Enrollment = require("../models/enrollment.model");
+const Comment = require("../models/comment.model");
 const { deleteOldFile, getFileUrl } = require("../config/multer.config");
 
 const registerUser = async (userData) => {
@@ -11,19 +14,26 @@ const registerUser = async (userData) => {
       throw error;
     }
 
+    const allowedRoles = ["student", "teacher"];
+    const role = allowedRoles.includes(userData.role) ? userData.role : "student";
+
     const user = new User({
       name: userData.name,
       email: userData.email,
       password: userData.password,
-      role: userData.role || "student",
+      role,
     });
 
     await user.save();
 
+    const token = user.generateToken();
+    const userObject = user.toObject();
+    delete userObject.password;
+
     return {
       success: true,
       message: "User registered successfully",
-      data: { user },
+      data: { user: userObject, token },
     };
   } catch (error) {
     console.error("Error in registerUser:", error.message);
@@ -268,6 +278,51 @@ const deleteAvatar = async (userId) => {
   }
 };
 
+/**
+ * Get platform-wide stats for admin dashboard
+ */
+const getAdminStats = async () => {
+  const [totalUsers, totalStudents, totalTeachers, totalAdmins, activeUsers] = await Promise.all([
+    User.countDocuments({}),
+    User.countDocuments({ role: "student" }),
+    User.countDocuments({ role: "teacher" }),
+    User.countDocuments({ role: "admin" }),
+    User.countDocuments({ isActive: true }),
+  ]);
+
+  const [totalCourses, publishedCourses, draftCourses, totalEnrollments, totalComments] =
+    await Promise.all([
+      Course.countDocuments({}),
+      Course.countDocuments({ status: "published" }),
+      Course.countDocuments({ status: "draft" }),
+      Enrollment.countDocuments({}),
+      Comment.countDocuments({}),
+    ]);
+
+  return {
+    success: true,
+    data: {
+      users: { total: totalUsers, students: totalStudents, teachers: totalTeachers, admins: totalAdmins, active: activeUsers },
+      courses: { total: totalCourses, published: publishedCourses, draft: draftCourses },
+      enrollments: { total: totalEnrollments },
+      comments: { total: totalComments },
+    },
+  };
+};
+
+/**
+ * Reactivate a deactivated user (admin)
+ */
+const reactivateUser = async (userId) => {
+  const user = await User.findByIdAndUpdate(userId, { isActive: true }, { new: true });
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return { success: true, message: "User reactivated successfully" };
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -276,6 +331,8 @@ module.exports = {
   getAllUsers,
   changePassword,
   deactivateUser,
+  reactivateUser,
   updateAvatar,
   deleteAvatar,
+  getAdminStats,
 };

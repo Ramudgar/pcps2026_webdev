@@ -459,6 +459,16 @@ const getMyEnrollments = async (req, res) => {
 // EXPORT ALL CONTROLLERS
 // ============================================
 
+const getCourseStudents = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await courseService.getCourseStudents(id, req.user.id, req.user.role);
+    res.status(200).json({ success: true, data: result.data });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   getAllCourses,
   getCourseById,
@@ -472,4 +482,5 @@ module.exports = {
   deleteLesson,
   enrollInCourse,
   getMyEnrollments,
+  getCourseStudents,
 };

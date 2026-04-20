@@ -266,6 +266,24 @@ const deleteAvatar = async (req, res) => {
   }
 };
 
+const getAdminStats = async (req, res) => {
+  try {
+    const result = await userService.getAdminStats();
+    res.status(200).json({ success: true, data: result.data });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+const reactivateUser = async (req, res) => {
+  try {
+    const result = await userService.reactivateUser(req.params.id);
+    res.status(200).json({ success: true, message: result.message });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -275,8 +293,10 @@ module.exports = {
   getUserById,
   changePassword,
   deactivateUser,
+  reactivateUser,
   createUser,
   logout,
   updateAvatar,
   deleteAvatar,
+  getAdminStats,
 };

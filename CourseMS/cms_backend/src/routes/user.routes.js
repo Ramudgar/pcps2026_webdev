@@ -107,6 +107,18 @@ router.post("/change-password", protect, userController.changePassword);
 // ============================================
 
 /**
+ * GET /api/users/admin/stats
+ * Platform-wide metrics for the admin dashboard
+ */
+router.get("/admin/stats", protect, adminOnly, userController.getAdminStats);
+
+/**
+ * PATCH /api/users/:id/reactivate
+ * Reactivate a deactivated user
+ */
+router.patch("/:id/reactivate", protect, adminOnly, userController.reactivateUser);
+
+/**
  * GET /api/users
  * Get all users with pagination
  * Query params: page, limit, includeInactive

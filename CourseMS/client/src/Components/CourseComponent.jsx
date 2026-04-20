@@ -1,28 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { fetchCourses } from "../services/courseApi";
+import { enrollInCourse } from "../services/userApi";
 
-/**
- * CourseComponent - Modern Course Listing with Search & Filters
- * 
- * Features:
- * - Real-time search by keyword
- * - Filter by category and level
- * - Modern card design with hover effects
- * - Loading skeletons
- * - Responsive grid layout
- */
-
-// Icons as components for better control
 const SearchIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="11" cy="11" r="8"/>
     <path d="m21 21-4.35-4.35"/>
-  </svg>
-);
-
-const FilterIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
   </svg>
 );
 
@@ -46,38 +31,55 @@ const StarIcon = () => (
   </svg>
 );
 
+const levelBadgeClass = (level) => {
+  switch (level) {
+    case "beginner": return "bg-emerald-500";
+    case "intermediate": return "bg-amber-500";
+    case "advanced": return "bg-red-500";
+    default: return "bg-gray-500";
+  }
+};
+
+const sortCourses = (list, sortBy) => {
+  const arr = [...list];
+  switch (sortBy) {
+    case "price-asc": return arr.sort((a, b) => (a.price || 0) - (b.price || 0));
+    case "price-desc": return arr.sort((a, b) => (b.price || 0) - (a.price || 0));
+    case "rating": return arr.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+    case "newest": return arr.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    case "title": return arr.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    default: return arr;
+  }
+};
+
 function CourseComponent() {
-  // State management
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Search and filter states
+
+  const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  
-  // Debounce search input (wait 300ms after user stops typing)
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-    }, 300);
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch courses when filters change
   const loadCourses = useCallback(async () => {
     try {
       setLoading(true);
-      
       const options = {};
       if (debouncedSearch) options.search = debouncedSearch;
       if (selectedCategory) options.category = selectedCategory;
       if (selectedLevel) options.level = selectedLevel;
-      
+
       const response = await fetchCourses(options);
-      setCourses(response.data.courses || []);
+      setCourses(response.data?.courses || response.courses || []);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -87,242 +89,245 @@ function CourseComponent() {
     }
   }, [debouncedSearch, selectedCategory, selectedLevel]);
 
-  // Load courses on mount and when filters change
-  useEffect(() => {
-    loadCourses();
-  }, [loadCourses]);
+  useEffect(() => { loadCourses(); }, [loadCourses]);
 
-  // Clear all filters
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("");
     setSelectedLevel("");
+    setSortBy("");
   };
 
-  // Extract unique categories from courses for filter dropdown
   const categories = [...new Set(courses.map(c => c.category).filter(Boolean))];
   const levels = ["beginner", "intermediate", "advanced"];
+  const displayCourses = sortCourses(courses, sortBy);
+  const hasFilters = !!(selectedCategory || selectedLevel || searchQuery || sortBy);
 
   return (
-    <div style={styles.container}>
-      {/* Header Section */}
-      <div style={styles.header}>
-        <h1 style={styles.title}>Explore Courses</h1>
-        <p style={styles.subtitle}>Discover your next skill from our expert-led courses</p>
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
+      className="max-w-[1200px] mx-auto px-5 py-10"
+    >
+      {/* Header */}
+      <div className="text-center mb-10">
+        <motion.h1
+          initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold text-gray-900 mb-3"
+        >
+          Explore Courses
+        </motion.h1>
+        <p className="text-lg text-gray-500">Discover your next skill from our expert-led courses</p>
       </div>
 
-      {/* Search and Filter Section */}
-      <div style={styles.filterSection}>
-        {/* Search Bar */}
-        <div style={styles.searchContainer}>
-          <div style={styles.searchIcon}><SearchIcon /></div>
+      {/* Filter Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6"
+      >
+        <div className="relative mb-4">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            <SearchIcon />
+          </div>
           <input
-            type="text"
-            placeholder="Search courses by title, description, or tags..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={styles.searchInput}
+            type="text" placeholder="Search courses by title, description, or tags..."
+            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-12 py-3.5 text-base border-2 border-gray-200 rounded-xl outline-none focus:border-indigo-500 transition-colors"
           />
           {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery("")}
-              style={styles.clearButton}
-            >
+            <button onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-2xl bg-transparent border-none cursor-pointer w-6 h-6 flex items-center justify-center">
               ×
             </button>
           )}
         </div>
 
-        {/* Filter Dropdowns */}
-        <div style={styles.filtersRow}>
-          <div style={styles.filterGroup}>
-            <FilterIcon />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              style={styles.select}
-            >
-              <option value="">All Categories</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
+        <div className="flex flex-wrap gap-3 items-center">
+          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white cursor-pointer outline-none focus:border-indigo-500 min-w-[150px]">
+            <option value="">All Categories</option>
+            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          </select>
 
-          <div style={styles.filterGroup}>
-            <select
-              value={selectedLevel}
-              onChange={(e) => setSelectedLevel(e.target.value)}
-              style={styles.select}
-            >
-              <option value="">All Levels</option>
-              {levels.map(level => (
-                <option key={level} value={level}>
-                  {level.charAt(0).toUpperCase() + level.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select value={selectedLevel} onChange={(e) => setSelectedLevel(e.target.value)}
+            className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white cursor-pointer outline-none focus:border-indigo-500 min-w-[150px]">
+            <option value="">All Levels</option>
+            {levels.map(level => (
+              <option key={level} value={level}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
+            ))}
+          </select>
 
-          {/* Clear Filters Button */}
-          {(selectedCategory || selectedLevel || searchQuery) && (
-            <button onClick={clearFilters} style={styles.clearFiltersBtn}>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
+            className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white cursor-pointer outline-none focus:border-indigo-500 min-w-[160px]">
+            <option value="">Sort By</option>
+            <option value="title">Title (A–Z)</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="newest">Newest</option>
+          </select>
+
+          {hasFilters && (
+            <motion.button
+              onClick={clearFilters} whileTap={{ scale: 0.97 }}
+              className="px-5 py-2.5 text-sm text-indigo-600 bg-indigo-50 border-none rounded-lg cursor-pointer font-medium hover:bg-indigo-100 transition-colors"
+            >
               Clear Filters
-            </button>
+            </motion.button>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Results Count */}
-      <div style={styles.resultsInfo}>
+      {/* Results */}
+      <div className="mb-5 text-gray-500 text-sm">
         {loading ? (
           <span>Loading courses...</span>
         ) : (
           <span>
-            Showing <strong>{courses.length}</strong> course{courses.length !== 1 ? 's' : ''}
-            {(debouncedSearch || selectedCategory || selectedLevel) && ' matching your criteria'}
+            Showing <strong className="text-gray-900">{displayCourses.length}</strong> course{displayCourses.length !== 1 ? 's' : ''}
+            {hasFilters && ' matching your criteria'}
           </span>
         )}
       </div>
 
-      {/* Content Area */}
       {error ? (
         <ErrorState message={error} onRetry={loadCourses} />
       ) : loading ? (
         <LoadingGrid />
-      ) : courses.length === 0 ? (
+      ) : displayCourses.length === 0 ? (
         <EmptyState onClear={clearFilters} />
       ) : (
-        <div style={styles.grid}>
-          {courses.map((course) => (
-            <CourseCard key={course._id} course={course} />
-          ))}
-        </div>
+        <motion.div
+          initial="hidden" animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <AnimatePresence>
+            {displayCourses.map((course) => (
+              <CourseCard key={course._id} course={course} navigate={navigate} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
-/**
- * CourseCard - Modern course card with hover effects
- */
-function CourseCard({ course }) {
-  const [isHovered, setIsHovered] = useState(false);
+function CourseCard({ course, navigate }) {
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrollMsg, setEnrollMsg] = useState("");
 
   const priceDisplay = course.price === 0 ? "Free" : `$${course.price}`;
-  const priceColor = course.price === 0 ? "#10b981" : "#6366f1";
-  
+  const priceColor = course.price === 0 ? "text-emerald-500" : "text-indigo-500";
+
   const formatDuration = (minutes) => {
     if (!minutes) return null;
     if (minutes < 60) return `${minutes}m`;
-    const hours = Math.round(minutes / 60);
-    return `${hours}h`;
+    return `${Math.round(minutes / 60)}h`;
+  };
+
+  const handleEnroll = async (e) => {
+    e.stopPropagation();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { state: { from: "/" } });
+      return;
+    }
+    setEnrolling(true);
+    setEnrollMsg("");
+    try {
+      await enrollInCourse(token, course._id);
+      setEnrollMsg("Enrolled!");
+      setTimeout(() => navigate("/learning"), 800);
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || "Enrollment failed";
+      setEnrollMsg(msg.includes("already") ? "Already enrolled" : msg);
+    } finally {
+      setEnrolling(false);
+    }
   };
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-        boxShadow: isHovered 
-          ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-          : '0 1px 3px rgba(0, 0, 0, 0.1)',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <motion.div
+      variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+      whileHover={{ y: -4, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)" }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer flex flex-col"
     >
-      {/* Thumbnail */}
-      <div style={styles.thumbnailContainer}>
+      <div className="relative h-[180px] overflow-hidden bg-gray-100">
         {course.thumbnail ? (
-          <img 
-            src={course.thumbnail} 
-            alt={course.title}
-            style={styles.thumbnail}
-          />
+          <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
         ) : (
-          <div style={styles.thumbnailPlaceholder}>
-            <span style={styles.placeholderText}>📚</span>
-          </div>
+          <div className="w-full h-full flex items-center justify-center text-5xl">📚</div>
         )}
-        
-        {/* Level Badge */}
-        <span style={{
-          ...styles.levelBadge,
-          backgroundColor: getLevelColor(course.level)
-        }}>
+        <span className={`absolute top-3 right-3 px-3 py-1.5 rounded-full text-[11px] font-semibold text-white capitalize ${levelBadgeClass(course.level)}`}>
           {course.level}
         </span>
       </div>
 
-      {/* Content */}
-      <div style={styles.cardContent}>
-        {/* Category */}
-        <span style={styles.category}>{course.category}</span>
-        
-        {/* Title */}
-        <h3 style={styles.cardTitle}>{course.title}</h3>
-        
-        {/* Description */}
-        <p style={styles.description}>
+      <div className="p-5 flex flex-col flex-1">
+        <span className="text-xs font-semibold text-indigo-500 uppercase tracking-wider">
+          {course.category}
+        </span>
+        <h3 className="text-lg font-bold text-gray-900 mt-2 mb-3 leading-[1.4]">
+          {course.title}
+        </h3>
+        <p className="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2">
           {course.shortDescription || course.description?.substring(0, 100)}...
         </p>
 
-        {/* Stats Row */}
-        <div style={styles.statsRow}>
+        <div className="flex gap-4 pb-4 mb-4 border-b border-gray-200">
           {course.totalDuration > 0 && (
-            <span style={styles.stat}>
+            <span className="flex items-center gap-1 text-[13px] text-gray-500">
               <ClockIcon /> {formatDuration(course.totalDuration)}
             </span>
           )}
           {course.totalLessons > 0 && (
-            <span style={styles.stat}>
+            <span className="flex items-center gap-1 text-[13px] text-gray-500">
               <BookIcon /> {course.totalLessons} lessons
             </span>
           )}
           {course.averageRating > 0 && (
-            <span style={styles.stat}>
+            <span className="flex items-center gap-1 text-[13px] text-gray-500">
               <StarIcon /> {course.averageRating.toFixed(1)}
             </span>
           )}
         </div>
 
-        {/* Footer */}
-        <div style={styles.cardFooter}>
-          <div style={styles.instructor}>
+        <div className="flex justify-between items-center mb-3">
+          <div className="flex items-center gap-2">
             {course.instructor?.avatar && (
-              <img 
-                src={course.instructor.avatar} 
-                alt={course.instructor.name}
-                style={styles.avatar}
-              />
+              <img src={course.instructor.avatar} alt={course.instructor.name}
+                className="w-7 h-7 rounded-full object-cover" />
             )}
-            <span style={styles.instructorName}>
+            <span className="text-[13px] text-gray-600 font-medium">
               {course.instructor?.name || "Unknown Instructor"}
             </span>
           </div>
-          
-          <span style={{...styles.price, color: priceColor}}>
-            {priceDisplay}
-          </span>
+          <span className={`text-lg font-bold ${priceColor}`}>{priceDisplay}</span>
         </div>
+
+        <motion.button
+          onClick={handleEnroll} disabled={enrolling}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+          className="mt-auto w-full py-2.5 bg-linear-to-r from-indigo-500 to-purple-500 text-white rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed border-none"
+        >
+          {enrolling ? "Enrolling..." : enrollMsg || "Enroll Now"}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-/**
- * Loading Skeleton Grid
- */
 function LoadingGrid() {
   return (
-    <div style={styles.grid}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} style={styles.skeletonCard}>
-          <div style={styles.skeletonThumbnail} />
-          <div style={styles.skeletonContent}>
-            <div style={styles.skeletonLine} />
-            <div style={{...styles.skeletonLine, width: '60%'}} />
-            <div style={{...styles.skeletonLine, width: '80%'}} />
+        <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+          <div className="h-[180px] bg-gray-200 animate-pulse" />
+          <div className="p-5">
+            <div className="h-4 bg-gray-200 rounded animate-pulse mb-3" />
+            <div className="h-4 bg-gray-200 rounded animate-pulse mb-3 w-3/5" />
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5" />
           </div>
         </div>
       ))}
@@ -330,333 +335,44 @@ function LoadingGrid() {
   );
 }
 
-/**
- * Empty State - No courses found
- */
 function EmptyState({ onClear }) {
   return (
-    <div style={styles.emptyState}>
-      <div style={styles.emptyIcon}>🔍</div>
-      <h3 style={styles.emptyTitle}>No courses found</h3>
-      <p style={styles.emptyText}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+      className="text-center py-20 px-5"
+    >
+      <div className="text-6xl mb-5">🔍</div>
+      <h3 className="text-2xl font-semibold text-gray-900 mb-2">No courses found</h3>
+      <p className="text-base text-gray-500 mb-6">
         Try adjusting your search or filters to find what you're looking for.
       </p>
-      <button onClick={onClear} style={styles.clearFiltersBtn}>
+      <motion.button
+        onClick={onClear} whileTap={{ scale: 0.97 }}
+        className="px-6 py-2.5 text-sm text-indigo-600 bg-indigo-50 border-none rounded-lg cursor-pointer font-medium hover:bg-indigo-100 transition-colors"
+      >
         Clear All Filters
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }
 
-/**
- * Error State
- */
 function ErrorState({ message, onRetry }) {
   return (
-    <div style={styles.errorState}>
-      <div style={styles.errorIcon}>⚠️</div>
-      <h3 style={styles.errorTitle}>Oops! Something went wrong</h3>
-      <p style={styles.errorText}>{message}</p>
-      <button onClick={onRetry} style={styles.retryButton}>
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+      className="text-center py-20 px-5"
+    >
+      <div className="text-6xl mb-5">⚠️</div>
+      <h3 className="text-2xl font-semibold text-gray-900 mb-2">Oops! Something went wrong</h3>
+      <p className="text-base text-red-500 mb-6">{message}</p>
+      <motion.button
+        onClick={onRetry} whileTap={{ scale: 0.97 }}
+        className="px-6 py-3 text-base text-white bg-indigo-500 border-none rounded-lg cursor-pointer font-medium hover:bg-indigo-600 transition-colors"
+      >
         Try Again
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }
-
-// Helper function for level colors
-function getLevelColor(level) {
-  const colors = {
-    beginner: '#10b981',
-    intermediate: '#f59e0b',
-    advanced: '#ef4444'
-  };
-  return colors[level] || '#6b7280';
-}
-
-// Styles object
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '40px 20px',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: '12px',
-  },
-  subtitle: {
-    fontSize: '18px',
-    color: '#6b7280',
-  },
-  filterSection: {
-    backgroundColor: 'white',
-    padding: '24px',
-    borderRadius: '12px',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    marginBottom: '24px',
-  },
-  searchContainer: {
-    position: 'relative',
-    marginBottom: '16px',
-  },
-  searchIcon: {
-    position: 'absolute',
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    color: '#9ca3af',
-  },
-  searchInput: {
-    width: '100%',
-    padding: '14px 16px 14px 48px',
-    fontSize: '16px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '10px',
-    outline: 'none',
-    transition: 'border-color 0.2s',
-    ':focus': {
-      borderColor: '#6366f1',
-    },
-  },
-  clearButton: {
-    position: 'absolute',
-    right: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'none',
-    border: 'none',
-    fontSize: '24px',
-    color: '#9ca3af',
-    cursor: 'pointer',
-    padding: '0',
-    width: '24px',
-    height: '24px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  filtersRow: {
-    display: 'flex',
-    gap: '12px',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  filterGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    color: '#6b7280',
-  },
-  select: {
-    padding: '10px 16px',
-    fontSize: '14px',
-    border: '1px solid #e5e7eb',
-    borderRadius: '8px',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-    outline: 'none',
-    minWidth: '150px',
-  },
-  clearFiltersBtn: {
-    padding: '10px 20px',
-    fontSize: '14px',
-    color: '#6366f1',
-    backgroundColor: '#eef2ff',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '500',
-    transition: 'background-color 0.2s',
-  },
-  resultsInfo: {
-    marginBottom: '20px',
-    color: '#6b7280',
-    fontSize: '14px',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-    gap: '24px',
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-  },
-  thumbnailContainer: {
-    position: 'relative',
-    height: '180px',
-    overflow: 'hidden',
-  },
-  thumbnail: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    transition: 'transform 0.3s',
-  },
-  thumbnailPlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#f3f4f6',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderText: {
-    fontSize: '48px',
-  },
-  levelBadge: {
-    position: 'absolute',
-    top: '12px',
-    right: '12px',
-    padding: '6px 12px',
-    borderRadius: '20px',
-    fontSize: '12px',
-    fontWeight: '600',
-    color: 'white',
-    textTransform: 'capitalize',
-  },
-  cardContent: {
-    padding: '20px',
-  },
-  category: {
-    fontSize: '12px',
-    fontWeight: '600',
-    color: '#6366f1',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  },
-  cardTitle: {
-    fontSize: '18px',
-    fontWeight: '700',
-    color: '#111827',
-    margin: '8px 0 12px 0',
-    lineHeight: '1.4',
-  },
-  description: {
-    fontSize: '14px',
-    color: '#6b7280',
-    lineHeight: '1.6',
-    marginBottom: '16px',
-  },
-  statsRow: {
-    display: 'flex',
-    gap: '16px',
-    marginBottom: '16px',
-    paddingBottom: '16px',
-    borderBottom: '1px solid #e5e7eb',
-  },
-  stat: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '13px',
-    color: '#6b7280',
-  },
-  cardFooter: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  instructor: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  avatar: {
-    width: '28px',
-    height: '28px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-  },
-  instructorName: {
-    fontSize: '13px',
-    color: '#4b5563',
-    fontWeight: '500',
-  },
-  price: {
-    fontSize: '18px',
-    fontWeight: '700',
-  },
-  skeletonCard: {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  },
-  skeletonThumbnail: {
-    height: '180px',
-    backgroundColor: '#e5e7eb',
-    animation: 'pulse 1.5s infinite',
-  },
-  skeletonContent: {
-    padding: '20px',
-  },
-  skeletonLine: {
-    height: '16px',
-    backgroundColor: '#e5e7eb',
-    borderRadius: '4px',
-    marginBottom: '12px',
-    animation: 'pulse 1.5s infinite',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  emptyIcon: {
-    fontSize: '64px',
-    marginBottom: '20px',
-  },
-  emptyTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: '8px',
-  },
-  emptyText: {
-    fontSize: '16px',
-    color: '#6b7280',
-    marginBottom: '24px',
-  },
-  errorState: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  errorIcon: {
-    fontSize: '64px',
-    marginBottom: '20px',
-  },
-  errorTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: '8px',
-  },
-  errorText: {
-    fontSize: '16px',
-    color: '#ef4444',
-    marginBottom: '24px',
-  },
-  retryButton: {
-    padding: '12px 24px',
-    fontSize: '16px',
-    color: 'white',
-    backgroundColor: '#6366f1',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '500',
-  },
-};
 
 export default CourseComponent;

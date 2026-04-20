@@ -595,6 +595,40 @@ const enrollInCourse = async (courseId, userId) => {
   }
 };
 
+/**
+ * Get students enrolled in a specific course
+ * Only the instructor or admin can view enrolled students
+ */
+const getCourseStudents = async (courseId, userId, userRole) => {
+  const course = await Course.findById(courseId);
+  if (!course) {
+    const error = new Error("Course not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isInstructor = course.instructor.toString() === userId;
+  const isAdmin = userRole === "admin";
+  if (!isInstructor && !isAdmin) {
+    const error = new Error("Not authorized to view students for this course");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const enrollments = await Enrollment.find({ course: courseId })
+    .populate("user", "name email avatar phone createdAt")
+    .sort({ createdAt: -1 });
+
+  return {
+    success: true,
+    data: {
+      course: { _id: course._id, title: course.title },
+      students: enrollments,
+      total: enrollments.length,
+    },
+  };
+};
+
 // Export all service functions
 module.exports = {
   getAllCourses,
@@ -609,4 +643,5 @@ module.exports = {
   getCoursesByInstructor,
   enrollInCourse,
   getMyEnrollments,
+  getCourseStudents,
 };
